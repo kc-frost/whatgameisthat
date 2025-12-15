@@ -17,8 +17,6 @@ data = {
 response = requests.post(url, json=data)
 r_json = response.json()
 
-# print(r_json)
-
 ACCESS_TOKEN = r_json['access_token']
 
 headers = {
@@ -26,24 +24,28 @@ headers = {
     'Authorization': f'Bearer {ACCESS_TOKEN}'
 }
 
-# where name = "Persona"* & game_type = 0 & expanded_games != null;
-query = '''
-    fields id, name, game_type.type, dlcs, expansions, expanded_games, parent_game, version_parent, game_status.status;
-    search "Persona Reload";
-    where name = "Persona"* & game_type != (1, 13, 5, 3) & version_parent = null;
-    limit 100;
+search_key = input("Enter game name: ")
+
+important_fields = "id, name, game_type.type"
+query = f'''
+    fields {important_fields}, rating, storyline, summary;
+    search "{search_key}";
+    where game_type != (13, 5, 3) & version_parent = null & themes != (42) & rating != 0;
+    limit 1;
 '''
 
 game_url = 'https://api.igdb.com/v4/games/'
-r = requests.post(game_url, headers=headers, data=query)
-g_json = r.json()
-count = 0
+response = requests.post(game_url, headers=headers, data=query)
+g_json = response.json()
+
+excluded_fields = ['name', 'game_type', 'rating']
 try:
     for e in g_json:
-        print(f"[{count}] id: {e['id']}")
+        print(f"{e['name']}")
         for key, value in e.items():
-            if key != 'id':
-                print(f"  {key}: {value}")
-        count += 1
+            if key == 'rating':
+                print(f"  {key}: {value:.2f}")
+            if key not in excluded_fields:
+                print(f"  {'IGDB ID' if key=='id' else key}: {value}")
 except Exception as e:
     print(e)
