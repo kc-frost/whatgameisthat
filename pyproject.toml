@@ -1,0 +1,16 @@
+[project]
+name = "whatgameisthat"
+version = "0.0.0"
+description = "CLI package that returns game information using IGDB's API"
+readme = "README.md"
+dependencies = [
+    "python-dotenv >=1.2.1", 
+    "requests >= 2.32.5"
+    ]
+
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+wgit = "whatgameisthat.search:main"
