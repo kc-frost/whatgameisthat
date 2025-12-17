@@ -1,3 +1,4 @@
+# most basic requirement of creating a package
 [project]
 name = "whatgameisthat"
 version = "0.0.0"
@@ -8,9 +9,12 @@ dependencies = [
     "requests >= 2.32.5"
     ]
 
+# below is important for turning into a cli app
 [build-system]
 requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
+# command is "wgit"
+# when wgit is entered, run the main() function in search(.py) under the whatgameisthat package (folder)
 [project.scripts]
 wgit = "whatgameisthat.search:main"
