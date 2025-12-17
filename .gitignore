@@ -1,2 +1,8 @@
 # env
 .env
+
+# egg
+*.egg-info
+
+# pycache
+__pycache__
