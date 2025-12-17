@@ -1,5 +1,6 @@
 import os
 import requests
+import argparse
 from dotenv import load_dotenv, dotenv_values
 
 # variables
@@ -37,18 +38,33 @@ def get_headers() -> dict:
     }
 
 def return_game_info(game_name: str) -> any:
+    # game types
+    # 5 = Mod
+    # 13 = Pack/Addon
+
     query = f'''
         fields {IMPORTANT_FIELDS};
         search "{game_name}";
-        where game_type != (13, 5, 3) & version_parent = null & themes != (42) & rating != 0;
+        where game_type != (13, 5) & version_parent = null & themes != (42) & rating != 0;
         limit 1;
     '''
     response = requests.post(GAME_URL, headers=get_headers(), data=query)
     return response.json()
 
+# debugging
+def return_game_types():
+    response = requests.post("https://api.igdb.com/v4/game_types", headers=get_headers(),data='fields type; limit 50;')
+    print(response.json())
+
+# main
 def main() -> None:
-    # search for game
-    search_key = input("Enter game name: ")
+    parser = argparse.ArgumentParser()
+    
+    # nargs allows for arguments to be passed with spaces (see argparse docs)
+    parser.add_argument("search_key", type=str, nargs='*', help="game to be searched for")
+    args = parser.parse_args()
+
+    search_key = args.search_key
     game_info = return_game_info(search_key)
 
     try:
